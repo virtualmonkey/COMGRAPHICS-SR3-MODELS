@@ -1,25 +1,9 @@
 from gl import Render, color
 
-r = Render(600,600)
+from obj import Obj
 
-r.glViewport(100,100, 400, 400)
+r = Render(1200,3000)
 
-r.glClearColor(0,0,0)
-r.glColor(0.45,0.5,0)
-r.glClear()
-
-r.glLine(-1,0, 0,1)
-r.glLine(0,1, 1,0)
-r.glLine(1,0, 0,-1)
-r.glLine(0,-1, -1,0)
-r.glLine(-1,0, 1,0)
-r.glLine(0,-1, 0,1)
-r.glLine(-1,-1, -1,1)
-r.glLine(-1,1, 1,1)
-r.glLine(1,1, 1,-1)
-r.glLine(1,-1, -1,-1)
-r.glLine(-1,-1, 1,1)
-r.glLine(1,-1, -1,1)
-
+r.loadModel('./models/bears.obj', (400,200), (40,40) )
 
 r.glFinish('output.bmp')

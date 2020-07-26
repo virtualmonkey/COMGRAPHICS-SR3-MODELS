@@ -1,5 +1,7 @@
 import struct
 
+from obj import  Obj
+
 def char(c):
     # 1 byte
     return struct.pack('=c', c.encode('ascii'))
@@ -67,7 +69,10 @@ class Render(object):
             self.pixels[pixelY][pixelX] = self.curr_color
     
     def glPoint(self, x, y):
-        self.pixels[y][x] = self.curr_color
+        try:
+            self.pixels[y][x] = self.curr_color
+        except:
+            pass
     
     def glColor(self, r,g,b):
         rgb_array = decimalToRgb([r,g,b])
@@ -111,7 +116,7 @@ class Render(object):
             if offset >= limit:
                 y += 1 if y0 < y1 else -1
                 limit += 2*dx
-
+    
     def glFinish(self, filename):
         archivo = open(filename, 'wb')
 
@@ -147,8 +152,57 @@ class Render(object):
 
         archivo.close()
 
+    def glLine_coord(self, x0, y0, x1, y1):
 
+        steep = abs(y1 - y0) > abs(x1 - x0)
 
+        if steep:
+            x0, y0 = y0, x0
+            x1, y1 = y1, x1
+        if x0 > x1:
+            x0, x1 = x1, x0
+            y0, y1 = y1, y0
+
+        dx, dy = abs(x1 - x0), abs(y1 - y0)      
+        
+        offset = 0
+        limit =  0.5
+        y = y0
+    
+        try:
+            m = dy/dx
+        except ZeroDivisionError:
+            pass
+            
+        
+
+        for x in range(x0, x1+1):
+            self.glPoint(y, x) if steep else self.glPoint(x, y)
+            
+            offset += 2*dy
+
+            if offset >= limit:
+                y += 1 if y0 < y1 else -1
+                limit += 2*dx        
+
+    def loadModel(self, filename, translate, scale):
+        model = Obj(filename)
+
+        for face in model.faces:
+
+            vertCount = len(face)
+
+            for vert in range(vertCount):
+                
+                v0 = model.vertices[ face[vert][0] - 1 ]
+                v1 = model.vertices[ face[(vert + 1) % vertCount][0] - 1]
+
+                x0 = round((v0[0] * scale[0])  + translate[0])
+                y0 = round((v0[1] * scale[1])  + translate[1])
+                x1 = round((v1[0] * scale[0])  + translate[0])
+                y1 = round((v1[1] * scale[1])  + translate[1])
+
+                self.glLine_coord(x0, y0, x1, y1)
 
 
 
