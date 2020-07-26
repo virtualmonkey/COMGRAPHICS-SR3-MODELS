@@ -2,8 +2,8 @@ from gl import Render, color
 
 from obj import Obj
 
-r = Render(1200,3000)
+r = Render(1000,1500)
 
-r.loadModel('./models/bears.obj', (400,200), (40,40) )
+r.loadModel('./models/sonic.obj', (400,200), (40,40) )
 
 r.glFinish('output.bmp')
